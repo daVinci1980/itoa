@@ -27,11 +27,13 @@
 
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
 
-int atoi(const char* a)
+template <typename T>
+void _atot(const char* a, T* pOutT)
 {
-	int result = 0;
+	(*pOutT) = 0;
+
 	if (!a)
-		return result;
+		return;
 
 	bool b_neg = a[0] == '-';
 	if (b_neg)
@@ -41,14 +43,19 @@ int atoi(const char* a)
 	{
 		int digit = a[0] - '0';
 		if (digit < 0 || digit > 9)
-			return result;
-		result = result * 10 + digit;
+			return;
+		(*pOutT) = (*pOutT) * 10 + digit;
 		++a;
 	}
 
 	if (b_neg)
-		result *= -1;
+		(*pOutT) *= -1;
+}
 
+int64_t my_atol(const char* a)
+{
+	int64_t result = 0;
+	_atot(a, &result);
 	return result;
 }
 
@@ -71,7 +78,7 @@ char* bogo_itoa(int n)
 
 		if (result[0] == '-' && result[1] == '0' && result[2] == 0)
 			continue;
-	} while(atoi(result) != n);
+	} while(my_atol(result) != n);
 
 	return result;
 }
@@ -80,17 +87,11 @@ int main(int argc, char* argv[])
 {
 	srand(42);
 
-	printf("%d\n", atoi("0"));
-	printf("%d\n", atoi("-1"));
-	printf("%d\n", atoi("1"));
-	printf("%d\n", atoi("10"));
-	printf("%d\n", atoi("-2147483648"));
-	printf("%d\n", atoi("2147483647"));
-
 	printf("%s\n", bogo_itoa(0));
 	printf("%s\n", bogo_itoa(-1));
 	printf("%s\n", bogo_itoa(1));
 	printf("%s\n", bogo_itoa(142));
+	printf("%s\n", bogo_itoa(-214776));
 
 	return 0;
 }
